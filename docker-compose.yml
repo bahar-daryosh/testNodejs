@@ -36,9 +36,6 @@ services:
     container_name: bahar-apis-mongo
     volumes:
       - ./mongodb/data/db:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: "turtleSnakeSql"
-      MONGO_INITDB_ROOT_PASSWORD: "VXedeDuGVtENfs61WVdd7ygFyC6bXt"
     networks:
       - bahar-net
     ports:
