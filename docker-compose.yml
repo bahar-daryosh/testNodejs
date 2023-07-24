@@ -1,0 +1,57 @@
+version: '3.7'
+
+services:
+  nginx:
+    build:
+      context: .
+      target: webserver
+      dockerfile: Dockerfile
+    container_name: bahar-apis-nginx
+    restart: 'unless-stopped'
+    ports:
+      - '85:80'
+    networks:
+      - bahar-net
+  nodejs:
+    build:
+      context: .
+      target: runner
+      dockerfile: Dockerfile
+    container_name: bahar-apis-nodejs
+    ports:
+      - '3033:3000'
+    volumes:
+      - ./app:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+    restart: 'unless-stopped'
+    networks:
+      - bahar-net
+    links:
+      - mongo
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: bahar-apis-mongo
+    volumes:
+      - ./mongodb/data/db:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "turtleSnakeSql"
+      MONGO_INITDB_ROOT_PASSWORD: "VXedeDuGVtENfs61WVdd7ygFyC6bXt"
+    networks:
+      - bahar-net
+    ports:
+      - '27020:27017'
+
+networks:
+  bahar-net:
+      driver: bridge
+
+volumes:
+  node_modules:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./app/node_modules
